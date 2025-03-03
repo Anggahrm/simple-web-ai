@@ -17,7 +17,7 @@ async function sendMessage() {
                 appendMessage("ai-message", "Terjadi kesalahan, coba lagi.");
             }
         } catch (error) {
-            appendMessage("ai-message", "Gagal terhubung ke server.");
+            appendMessage("ai-message", "Gagal terhubung ke server." + error);
         }
     }
 }
