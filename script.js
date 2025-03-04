@@ -36,7 +36,7 @@ async function sendMessage() {
 
 async function sendImage(imageFile) {
     const formData = new FormData();
-    formData.append('image', imageFile);
+    formData.append('imageBuffer', imageFile);
     formData.append('user', 'user');
     formData.append('prompt', perintah);
 
