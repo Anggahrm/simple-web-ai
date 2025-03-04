@@ -17,38 +17,16 @@ function appendMessage(sender, message, isImage = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-async function sendMessage() {
-    const text = messageInput.value.trim();
-    if (!text) return;
-
-    appendMessage('user', text);
-    messageInput.value = '';
-
-    const response = await fetch('https://luminai.my.id/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: text, user: 'user', prompt: perintah })
-    });
-
-    const result = await response.json();
-    appendMessage('ai', result.result);
-}
-
 async function sendImage(imageFile) {
-    const caption = messageInput.value.trim();  // Ambil caption dari input teks
-    if (!imageFile) return;
-
     const formData = new FormData();
-    formData.append('image', imageFile);
-    formData.append('user', 'user');
-    formData.append('prompt', perintah);
-    if (caption) formData.append('content', caption);  // Tambahkan caption jika ada
+    formData.append('context', '');                 // Tambahkan context kosong
+    formData.append('imageBuffer', imageFile);       // Tambahkan gambar dari input user
+    formData.append('user', 'user');                 // Tambahkan user
+    formData.append('prompt', perintah);             // Tambahkan prompt
 
     const reader = new FileReader();
     reader.onload = () => {
-        // Tampilkan gambar + caption di chat user
-        const imageHtml = `<img src="${reader.result}" alt="Image" style="max-width: 100%; border-radius: 5px;">`;
-        appendMessage('user', caption ? `${imageHtml}<br><i>${caption}</i>` : imageHtml, true);
+        appendMessage('user', reader.result, true);  // Tampilkan gambar yang dikirim user
     };
     reader.readAsDataURL(imageFile);
 
@@ -59,17 +37,18 @@ async function sendImage(imageFile) {
         });
 
         const result = await response.json();
-        console.log(result);  // Cek respons dari API
+        console.log(result);  // Cek respons API di console
         if (result && result.result) {
-            appendMessage('ai', result.result);
+            appendMessage('ai', result.result);       // Tampilkan respons AI
         } else {
             appendMessage('ai', 'Gagal menerima respons dari server.');
         }
     } catch (error) {
-        console.log('Error:', error);  // Cek error di console
+        console.log('Error:', error);                // Cek error di console
         appendMessage('ai', 'Terjadi kesalahan saat mengirim gambar.');
     }
 }
+
 
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
@@ -80,7 +59,6 @@ imageButton.addEventListener('click', () => imageInput.click());
 imageInput.addEventListener('change', () => {
     if (imageInput.files.length > 0) {
         sendImage(imageInput.files[0]);
-        imageInput.value = '';        // Reset input file
-        messageInput.value = '';      // Reset input teks (caption)
+        imageInput.value = ''; // Reset input file
     }
 });
