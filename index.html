@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat dengan AI</title>
+<title>ZumyNext AI Chat</title>
 <link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
 
+<body>
 <div class="chat-container">
-    <div class="chat-header">Chat dengan AI</div>
-    <div id="chat-box" class="chat-box"></div>
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="Ketik pesan..." onkeypress="if(event.key === 'Enter') sendMessage()">
-        <button onclick="sendMessage()">Kirim</button>
+    <div class="chat-header">
+        <h2>ZumyNext AI</h2>
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input">
+        <input type="file" id="image-input" accept="image/*" style="display: none;">
+        <button id="image-button">📷</button>
+        <input type="text" id="message-input" placeholder="Ketik pesan...">
+        <button id="send-button">➤</button>
     </div>
 </div>
-
 <script src="script.js"></script>
 </body>
+
 </html>
