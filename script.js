@@ -35,24 +35,40 @@ async function sendMessage() {
 }
 
 async function sendImage(imageFile) {
+    const caption = messageInput.value.trim();  // Ambil caption dari input teks
+    if (!imageFile) return;
+
     const formData = new FormData();
-    formData.append('imageBuffer', imageFile);
+    formData.append('image', imageFile);
     formData.append('user', 'user');
     formData.append('prompt', perintah);
+    if (caption) formData.append('content', caption);  // Tambahkan caption jika ada
 
     const reader = new FileReader();
     reader.onload = () => {
-        appendMessage('user', reader.result, true);
+        // Tampilkan gambar + caption di chat user
+        const imageHtml = `<img src="${reader.result}" alt="Image" style="max-width: 100%; border-radius: 5px;">`;
+        appendMessage('user', caption ? `${imageHtml}<br><i>${caption}</i>` : imageHtml, true);
     };
     reader.readAsDataURL(imageFile);
 
-    const response = await fetch('https://luminai.my.id/', {
-        method: 'POST',
-        body: formData
-    });
+    try {
+        const response = await fetch('https://luminai.my.id/', {
+            method: 'POST',
+            body: formData
+        });
 
-    const result = await response.json();
-    appendMessage('ai', result.result);
+        const result = await response.json();
+        console.log(result);  // Cek respons dari API
+        if (result && result.result) {
+            appendMessage('ai', result.result);
+        } else {
+            appendMessage('ai', 'Gagal menerima respons dari server.');
+        }
+    } catch (error) {
+        console.log('Error:', error);  // Cek error di console
+        appendMessage('ai', 'Terjadi kesalahan saat mengirim gambar.');
+    }
 }
 
 sendButton.addEventListener('click', sendMessage);
@@ -64,6 +80,7 @@ imageButton.addEventListener('click', () => imageInput.click());
 imageInput.addEventListener('change', () => {
     if (imageInput.files.length > 0) {
         sendImage(imageInput.files[0]);
-        imageInput.value = ''; // Reset input file
+        imageInput.value = '';        // Reset input file
+        messageInput.value = '';      // Reset input teks (caption)
     }
 });
