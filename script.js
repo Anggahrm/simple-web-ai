@@ -17,38 +17,43 @@ function appendMessage(sender, message, isImage = false) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+async function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    appendMessage('user', text);
+    messageInput.value = '';
+
+    const response = await fetch('https://luminai.my.id/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: text, user: 'user', prompt: perintah })
+    });
+
+    const result = await response.json();
+    appendMessage('ai', result.result);
+}
+
 async function sendImage(imageFile) {
     const formData = new FormData();
-    formData.append('context', '');                 // Tambahkan context kosong
-    formData.append('imageBuffer', imageFile);       // Tambahkan gambar dari input user
-    formData.append('user', 'user');                 // Tambahkan user
-    formData.append('prompt', perintah);             // Tambahkan prompt
+    formData.append('imageBuffer', imageFile);
+    formData.append('user', 'user');
+    formData.append('prompt', perintah);
 
     const reader = new FileReader();
     reader.onload = () => {
-        appendMessage('user', reader.result, true);  // Tampilkan gambar yang dikirim user
+        appendMessage('user', reader.result, true);
     };
     reader.readAsDataURL(imageFile);
 
-    try {
-        const response = await fetch('https://luminai.my.id/', {
-            method: 'POST',
-            body: formData
-        });
+    const response = await fetch('https://luminai.my.id/', {
+        method: 'POST',
+        body: formData
+    });
 
-        const result = await response.json();
-        console.log(result);  // Cek respons API di console
-        if (result && result.result) {
-            appendMessage('ai', result.result);       // Tampilkan respons AI
-        } else {
-            appendMessage('ai', 'Gagal menerima respons dari server.');
-        }
-    } catch (error) {
-        console.log('Error:', error);                // Cek error di console
-        appendMessage('ai', 'Terjadi kesalahan saat mengirim gambar.');
-    }
+    const result = await response.json();
+    appendMessage('ai', result.result);
 }
-
 
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
