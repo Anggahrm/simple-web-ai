@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +7,22 @@
 <link rel="stylesheet" href="styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
 <div class="chat-container">
     <div class="chat-header">
         <h2>ZumyNext AI</h2>
+        <button id="theme-toggle">🌙</button>
     </div>
     <div class="chat-box" id="chat-box"></div>
+    <div class="typing-indicator" id="typing-indicator">AI is typing...</div>
     <div class="chat-input">
         <input type="file" id="image-input" accept="image/*" style="display: none;">
         <button id="image-button">📷</button>
-        <input type="text" id="message-input" placeholder="Ketik pesan...">
+        <input type="text" id="message-input" placeholder="Type a message...">
         <button id="send-button">➤</button>
     </div>
 </div>
+<button id="chat-toggle">💬</button>
 <script src="script.js"></script>
 </body>
-
 </html>
