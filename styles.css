@@ -152,3 +152,8 @@ body.dark {
     background-color: #444;
     color: #fff;
 }
+
+.dark .chat-header {
+    background-color: #444;
+    color: #fff;
+}
