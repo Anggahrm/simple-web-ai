@@ -1,7 +1,6 @@
 const chatBox = document.getElementById('chat-box');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
-const chatToggle = document.getElementById('chat-toggle');
 const themeToggle = document.getElementById('theme-toggle');
 const typingIndicator = document.getElementById('typing-indicator');
 
@@ -50,12 +49,6 @@ async function sendMessage() {
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
-});
-
-// Toggle chat visibility
-chatToggle.addEventListener('click', function () {
-    const chatContainer = document.querySelector(".chat-container");
-    chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
 });
 
 // Toggle dark mode
