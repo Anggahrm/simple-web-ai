@@ -13,11 +13,22 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.post('/upload', upload.single('imageBuffer'), (req, res) => {
+app.post('/upload', upload.single('imageBuffer'), async (req, res) => {
     const imageBuffer = req.file.buffer;
-    // Process the imageBuffer here
+    const prompt = req.body.prompt;
 
-    res.json({ message: 'Image received and processed' });
+    try {
+        const response = await fetch('https://luminai.my.id/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: '', imageBuffer: imageBuffer.toString('base64'), user: 'user', prompt: prompt })
+        });
+
+        const result = await response.json();
+        res.json({ message: result.result });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal mengirim gambar.' });
+    }
 });
 
 app.listen(PORT, () => {

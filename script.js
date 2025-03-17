@@ -65,13 +65,13 @@ async function sendImage(imageFile) {
     typingIndicator.style.display = "block";
 
     try {
-        const response = await fetch('https://luminai.my.id/', {
+        const response = await fetch('/upload', {
             method: 'POST',
             body: formData
         });
 
         const result = await response.json();
-        appendMessage('ai', result.result);
+        appendMessage('ai', result.message);
     } catch (error) {
         appendMessage('ai', "Gagal mengirim gambar.");
     } finally {
