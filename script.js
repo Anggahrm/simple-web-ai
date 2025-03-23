@@ -3,13 +3,16 @@ const chatBox = document.getElementById("chat-box")
 const messageInput = document.getElementById("message-input")
 const sendButton = document.getElementById("send-button")
 const themeToggle = document.getElementById("theme-toggle")
+const mobileThemeToggle = document.getElementById("mobile-theme-toggle")
 const typingIndicator = document.getElementById("typing-indicator")
 const emptyState = document.getElementById("empty-state")
 const clearChatButton = document.getElementById("clear-chat")
 const suggestionChips = document.querySelectorAll(".suggestion-chip")
-const mobileMenuToggle = document.getElementById("mobile-menu-toggle")
-const sidebar = document.querySelector(".sidebar")
-const newChatBtn = document.querySelector(".new-chat-btn")
+const sidebarToggle = document.getElementById("sidebar-toggle")
+const closeSidebar = document.getElementById("close-sidebar")
+const sidebar = document.getElementById("sidebar")
+const overlay = document.getElementById("overlay")
+const newChatBtn = document.getElementById("new-chat")
 const chatHistory = document.getElementById("chat-history")
 
 // ZumyNext configuration
@@ -27,7 +30,7 @@ function initChat() {
   const savedTheme = localStorage.getItem("zumyTheme")
   if (savedTheme === "dark") {
     document.body.classList.add("dark")
-    updateThemeIcon(true)
+    updateThemeIcons(true)
   }
 
   // Load saved conversations
@@ -47,19 +50,45 @@ function initChat() {
     })
   })
 
-  // Mobile menu toggle
-  mobileMenuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("active")
-  })
+  // Mobile sidebar toggle
+  sidebarToggle.addEventListener("click", openSidebar)
+  closeSidebar.addEventListener("click", closeSidebarFn)
+  overlay.addEventListener("click", closeSidebarFn)
 
   // New chat button
-  newChatBtn.addEventListener("click", startNewChat)
+  newChatBtn.addEventListener("click", () => startNewChat())
+
+  // Handle viewport height for mobile browsers
+  setMobileHeight()
+  window.addEventListener("resize", setMobileHeight)
+}
+
+// Set correct viewport height for mobile browsers
+function setMobileHeight() {
+  // First we get the viewport height and multiply it by 1% to get a value for a vh unit
+  const vh = window.innerHeight * 0.01
+  // Then we set the value in the --vh custom property to the root of the document
+  document.documentElement.style.setProperty("--vh", `${vh}px`)
 }
 
 // Auto-resize textarea
 function autoResizeTextarea() {
   messageInput.style.height = "auto"
-  messageInput.style.height = messageInput.scrollHeight + "px"
+  messageInput.style.height = Math.min(messageInput.scrollHeight, 200) + "px"
+}
+
+// Open sidebar
+function openSidebar() {
+  sidebar.classList.add("active")
+  overlay.classList.add("active")
+  document.body.style.overflow = "hidden" // Prevent background scrolling
+}
+
+// Close sidebar
+function closeSidebarFn() {
+  sidebar.classList.remove("active")
+  overlay.classList.remove("active")
+  document.body.style.overflow = ""
 }
 
 // Helper function to format messages with markdown-like syntax
@@ -80,6 +109,9 @@ function formatMessage(text) {
   text = text.replace(/\[([^\]]+)\]$$([^)]+)$$/g, '<a href="$2" target="_blank">$1</a>')
 
   // Handle line breaks
+  text = text.replace(/\n/g, '<a href="$2" target="_blank">$1</a>')
+
+  // Handle line breaks
   text = text.replace(/\n/g, "<br>")
 
   return text
@@ -96,16 +128,19 @@ function appendMessage(sender, message, isImage = false) {
   const messageWrapper = document.createElement("div")
   messageWrapper.className = `message-wrapper ${sender}`
 
-  const messageInner = document.createElement("div")
-  messageInner.className = "message-inner"
-
-  const avatar = document.createElement("div")
-  avatar.className = `avatar ${sender}`
+  const messageBubble = document.createElement("div")
+  messageBubble.className = "message-bubble"
 
   if (sender === "ai") {
-    avatar.textContent = "Z"
-  } else {
-    avatar.textContent = "U"
+    const messageAvatar = document.createElement("div")
+    messageAvatar.className = "message-avatar"
+
+    const avatarImg = document.createElement("img")
+    avatarImg.src = "bot-avatar.png"
+    avatarImg.alt = "ZumyNext AI"
+
+    messageAvatar.appendChild(avatarImg)
+    messageBubble.appendChild(messageAvatar)
   }
 
   const messageContent = document.createElement("div")
@@ -117,13 +152,9 @@ function appendMessage(sender, message, isImage = false) {
     messageContent.innerHTML = formatMessage(message)
   }
 
-  messageInner.appendChild(avatar)
-  messageInner.appendChild(messageContent)
-  messageWrapper.appendChild(messageInner)
+  messageBubble.appendChild(messageContent)
+  messageWrapper.appendChild(messageBubble)
   chatBox.appendChild(messageWrapper)
-
-  // Apply entry animation
-  messageWrapper.style.animation = "slideUp 0.3s ease forwards"
 
   // Auto-scroll to the latest message with smooth animation
   setTimeout(() => {
@@ -166,7 +197,7 @@ async function sendMessage() {
   sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 
   // Show typing indicator
-  typingIndicator.style.display = "block"
+  typingIndicator.style.display = "flex"
 
   try {
     const response = await fetch("https://luminai.my.id/", {
@@ -233,7 +264,7 @@ function startNewChat(initialMessage = null) {
   }
 
   // Close mobile sidebar if open
-  sidebar.classList.remove("active")
+  closeSidebarFn()
 }
 
 // Add a chat to the history sidebar
@@ -304,7 +335,7 @@ function loadChat(chatId) {
   }
 
   // Close mobile sidebar
-  sidebar.classList.remove("active")
+  closeSidebarFn()
 }
 
 // Update chat title
@@ -376,16 +407,17 @@ function clearChat() {
   }
 }
 
-// Update theme toggle icon
-function updateThemeIcon(isDark) {
-  const icon = themeToggle.querySelector("i")
+// Update theme toggle icons
+function updateThemeIcons(isDark) {
+  const icons = [themeToggle.querySelector("i"), mobileThemeToggle.querySelector("i")]
+
   const text = themeToggle.querySelector("span")
 
   if (isDark) {
-    icon.className = "fas fa-sun"
+    icons.forEach((icon) => (icon.className = "fas fa-sun"))
     text.textContent = "Light mode"
   } else {
-    icon.className = "fas fa-moon"
+    icons.forEach((icon) => (icon.className = "fas fa-moon"))
     text.textContent = "Dark mode"
   }
 }
@@ -393,7 +425,7 @@ function updateThemeIcon(isDark) {
 // Toggle dark mode
 function toggleTheme() {
   const isDarkMode = document.body.classList.toggle("dark")
-  updateThemeIcon(isDarkMode)
+  updateThemeIcons(isDarkMode)
 
   // Save preference
   localStorage.setItem("zumyTheme", isDarkMode ? "dark" : "light")
@@ -408,6 +440,7 @@ messageInput.addEventListener("keypress", (e) => {
   }
 })
 themeToggle.addEventListener("click", toggleTheme)
+mobileThemeToggle.addEventListener("click", toggleTheme)
 clearChatButton.addEventListener("click", clearChat)
 
 // Initialize when everything is loaded

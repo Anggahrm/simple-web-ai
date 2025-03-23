@@ -2,106 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>ZumyNext AI</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
+    <div class="app-wrapper">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <button id="sidebar-toggle" class="icon-button">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-logo">
+                <img src="bot-avatar.png" alt="ZumyNext" class="mobile-logo-img">
+                <span>ZumyNext AI</span>
+            </div>
+            <button id="mobile-theme-toggle" class="icon-button">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <div class="logo-icon">Z</div>
-                    <h1>ZumyNext</h1>
+                    <img src="bot-avatar.png" alt="ZumyNext" class="logo-img">
+                    <h1>ZumyNext AI</h1>
                 </div>
-                <button class="new-chat-btn">
-                    <i class="fas fa-plus"></i>
-                    <span>New Chat</span>
+                <button id="close-sidebar" class="icon-button mobile-only">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="sidebar-content">
-                <div class="history-header">
-                    <h3>Recent Chats</h3>
-                </div>
-                <div class="chat-history" id="chat-history">
-                    <!-- Chat history will be populated here -->
+            
+            <button id="new-chat" class="new-chat-btn">
+                <i class="fas fa-plus"></i>
+                <span>New Chat</span>
+            </button>
+            
+            <div class="conversations">
+                <h2 class="section-title">Recent Conversations</h2>
+                <div id="chat-history" class="chat-history">
                     <div class="empty-history">
                         <p>No recent conversations</p>
                     </div>
                 </div>
             </div>
+            
             <div class="sidebar-footer">
-                <button class="control-button" id="clear-chat" title="Clear conversation">
+                <button id="clear-chat" class="sidebar-btn">
                     <i class="fas fa-broom"></i>
-                    <span>Clear chats</span>
+                    <span>Clear conversations</span>
                 </button>
-                <button class="control-button" id="theme-toggle" title="Toggle dark mode">
+                <button id="theme-toggle" class="sidebar-btn">
                     <i class="fas fa-moon"></i>
                     <span>Dark mode</span>
                 </button>
+                <div class="creator-info">
+                    <p>Created by Angga (iZumy)</p>
+                    <a href="https://zumynext.tech" target="_blank">zumynext.tech</a>
+                </div>
             </div>
         </aside>
 
+        <!-- Main Chat Area -->
         <main class="main-content">
-            <div class="chat-header">
-                <div class="chat-title">
-                    <h2>Chat with ZumyNext AI</h2>
-                </div>
-                <div class="header-actions">
-                    <button class="action-button" id="mobile-menu-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-
             <div class="chat-container">
-                <div class="chat-box" id="chat-box">
-                    <div class="empty-state" id="empty-state">
-                        <div class="empty-state-content">
-                            <div class="empty-state-icon">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <h3>Welcome to ZumyNext AI</h3>
-                            <p>I'm your AI assistant created by Angga (iZumy). Ask me anything or try one of these examples:</p>
-                            <div class="suggestions">
-                                <div class="suggestion-chip">Tell me about yourself</div>
-                                <div class="suggestion-chip">What can you help me with?</div>
-                                <div class="suggestion-chip">Tell me a joke</div>
-                                <div class="suggestion-chip">Help me with a coding problem</div>
-                            </div>
+                <div id="chat-box" class="chat-box">
+                    <div id="empty-state" class="empty-state">
+                        <div class="empty-state-icon">
+                            <img src="bot-avatar.png" alt="ZumyNext AI" class="bot-avatar">
+                        </div>
+                        <h2>Welcome to ZumyNext AI</h2>
+                        <p>I'm your AI assistant created by Angga. Ask me anything or try one of these examples:</p>
+                        <div class="suggestions">
+                            <button class="suggestion-chip">Tell me about yourself</button>
+                            <button class="suggestion-chip">What can you help me with?</button>
+                            <button class="suggestion-chip">Tell me a joke</button>
+                            <button class="suggestion-chip">Help me with a coding problem</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="typing-indicator" id="typing-indicator">
-                    <div class="typing-inner">
-                        <div class="avatar ai">Z</div>
-                        <div class="typing-dots">
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                        </div>
+                <!-- Typing Indicator -->
+                <div id="typing-indicator" class="typing-indicator">
+                    <div class="typing-avatar">
+                        <img src="bot-avatar.png" alt="ZumyNext AI" class="bot-avatar small">
+                    </div>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </div>
                 </div>
 
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <div class="chat-input">
-                            <textarea id="message-input" placeholder="Message ZumyNext..." rows="1"></textarea>
-                            <div class="input-buttons">
-                                <button class="send-button" id="send-button">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-                        </div>
+                <!-- Input Area - Fixed at bottom -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="message-input" 
+                            placeholder="Message ZumyNext..." 
+                            rows="1"
+                            autofocus
+                        ></textarea>
+                        <button id="send-button" class="send-button" aria-label="Send message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
+                    <p class="disclaimer">ZumyNext may produce inaccurate information about people, places, or facts.</p>
                 </div>
             </div>
         </main>
+
+        <!-- Overlay for mobile -->
+        <div id="overlay" class="overlay"></div>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
