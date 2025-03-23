@@ -1,7 +1,7 @@
 {
-  "name": "my-ai-chat",
+  "name": "zumynext-ai",
   "version": "1.0.0",
-  "description": "Simple AI chat hosted on Heroku",
+  "description": "Modern AI chat interface by Angga (iZumy)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -13,3 +13,4 @@
     "node": ">=14.0.0"
   }
 }
+
